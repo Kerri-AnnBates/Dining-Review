@@ -18,5 +18,5 @@ public class Restaurant {
     private Integer peanutScore;
     private Integer dairyScore;
     private Integer eggScore;
-    private Integer AverageScore;
+    private Integer overallScore;
 }
