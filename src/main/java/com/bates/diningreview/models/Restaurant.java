@@ -1,8 +1,6 @@
 package com.bates.diningreview.models;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -10,10 +8,12 @@ import javax.persistence.*;
 @Table(name = "Restaurant")
 @Getter
 @Setter
+@NoArgsConstructor
+@RequiredArgsConstructor
 public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Setter(AccessLevel.NONE) private Long id;
+    private Long id;
     private String name;
     private Integer peanutScore;
     private Integer dairyScore;
