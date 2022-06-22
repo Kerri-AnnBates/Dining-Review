@@ -8,7 +8,6 @@ import javax.persistence.*;
 @Table(name = "Restaurant")
 @Getter
 @Setter
-@NoArgsConstructor
 @RequiredArgsConstructor
 public class Restaurant {
     @Id
