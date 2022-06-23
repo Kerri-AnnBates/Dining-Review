@@ -16,10 +16,11 @@ public class DiningReview {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    private String username;
+    private String submittedBy;
     private Long restaurantId;
     private Integer peanutScore;
     private Integer eggScore;
     private Integer dairyScore;
     private String comment;
+    private Status status;
 }
