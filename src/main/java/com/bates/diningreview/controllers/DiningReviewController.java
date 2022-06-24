@@ -1,14 +1,18 @@
 package com.bates.diningreview.controllers;
 
+import com.bates.diningreview.models.AdminReview;
 import com.bates.diningreview.models.DiningReview;
+import com.bates.diningreview.models.Status;
 import com.bates.diningreview.repositories.DiningReviewRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping("/api/reviews")
 public class DiningReviewController {
     private final DiningReviewRepository diningReviewRepository;
 
@@ -20,5 +24,37 @@ public class DiningReviewController {
     @PostMapping("")
     public DiningReview addReview(@RequestBody DiningReview newReview) {
         return diningReviewRepository.save(newReview);
+    }
+
+    // As an admin, I want to approve or reject a given dining review.
+    @PutMapping("/{reviewId}")
+    public DiningReview updateReview(@PathVariable Long reviewId, @RequestBody AdminReview adminReview) {
+        Optional<DiningReview> reviewOpt = diningReviewRepository.findById(reviewId);
+
+        if (reviewOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Review not found");
+        }
+
+        DiningReview reviewToUpdate = reviewOpt.get();
+
+        if (adminReview.getAccepted()) {
+            reviewToUpdate.setStatus(Status.ACCEPTED);
+        } else {
+            reviewToUpdate.setStatus(Status.REJECTED);
+        }
+
+        return diningReviewRepository.save(reviewToUpdate);
+    }
+
+    // Get pending reviews
+    @GetMapping("/pending")
+    public List<DiningReview> getPendingReviews() {
+        return diningReviewRepository.findByStatusIs(Status.PENDING);
+    }
+
+    // Get approved reviews per restaurant
+    @GetMapping("/accepted/{restaurantId}")
+    public List<DiningReview> getApprovedReviewsByRestaurantId(Long restaurantId) {
+        return diningReviewRepository.findByRestaurantIdAndStatusIs(restaurantId, Status.ACCEPTED);
     }
 }
