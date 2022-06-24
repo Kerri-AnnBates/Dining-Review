@@ -14,6 +14,7 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String name;
+    private String zipCode;
     private Integer peanutScore;
     private Integer dairyScore;
     private Integer eggScore;
