@@ -27,7 +27,7 @@ public class DiningReviewController {
     }
 
     // As an admin, I want to approve or reject a given dining review.
-    @PutMapping("/{reviewId}")
+    @PutMapping("admin/{reviewId}")
     public DiningReview updateReview(@PathVariable Long reviewId, @RequestBody AdminReview adminReview) {
         Optional<DiningReview> reviewOpt = diningReviewRepository.findById(reviewId);
 
@@ -47,7 +47,7 @@ public class DiningReviewController {
     }
 
     // Get pending reviews
-    @GetMapping("/pending")
+    @GetMapping("admin/pending")
     public List<DiningReview> getPendingReviews() {
         return diningReviewRepository.findByStatusIs(Status.PENDING);
     }
@@ -56,5 +56,16 @@ public class DiningReviewController {
     @GetMapping("/accepted/{restaurantId}")
     public List<DiningReview> getApprovedReviewsByRestaurantId(Long restaurantId) {
         return diningReviewRepository.findByRestaurantIdAndStatusIs(restaurantId, Status.ACCEPTED);
+    }
+
+    @GetMapping("/{reviewId}")
+    public DiningReview getReviewById(@PathVariable Long reviewId) {
+        Optional<DiningReview> reviewOpt = diningReviewRepository.findById(reviewId);
+
+        if (reviewOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Review not found");
+        }
+
+        return reviewOpt.get();
     }
 }
