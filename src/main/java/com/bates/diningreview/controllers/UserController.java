@@ -2,7 +2,9 @@ package com.bates.diningreview.controllers;
 
 import com.bates.diningreview.models.User;
 import com.bates.diningreview.repositories.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -27,7 +29,7 @@ public class UserController {
         Optional<User> userOpt = userRepository.findById(id);
 
         if (userOpt.isEmpty()) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found by id.");
         }
 
         User userToUpdate = userOpt.get();
@@ -62,6 +64,12 @@ public class UserController {
     // Get user by username
     @GetMapping("/{name}")
     public User getUserByUsername(@PathVariable String name) {
-        return userRepository.findByUsername(name);
+        User user = userRepository.findByUsername(name);
+
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        return user;
     }
 }
