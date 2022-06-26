@@ -33,6 +33,8 @@ public class DiningReviewController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This restaurant does not exists");
         }
 
+        newReview.setStatus(Status.PENDING);
+
         return diningReviewRepository.save(newReview);
     }
 

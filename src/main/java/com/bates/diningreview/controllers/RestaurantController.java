@@ -20,6 +20,7 @@ public class RestaurantController {
     }
 
     @PostMapping("")
+    @ResponseStatus(HttpStatus.CREATED)
     public Restaurant addNewRestaurant(@RequestBody Restaurant newRestaurant) {
         Restaurant restaurant = restaurantRepository.findByNameAndZipCode(newRestaurant.getName(), newRestaurant.getZipCode());
 
@@ -49,7 +50,7 @@ public class RestaurantController {
         List<Restaurant> restaurants = new ArrayList<>();
 
         if (peanutAllergy) {
-          restaurants = restaurantRepository.findByZipCodeAndPeanutScoreNotNullOrderByZipCodeDesc(zipcode);
+            restaurants = restaurantRepository.findByZipCodeAndPeanutScoreNotNullOrderByZipCodeDesc(zipcode);
         } else if (diaryAllergy) {
             restaurants = restaurantRepository.findByZipCodeAndDairyScoreNotNullOrderByZipCodeDesc(zipcode);
         } else if (eggAllergy) {
