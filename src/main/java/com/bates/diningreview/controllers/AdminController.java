@@ -2,6 +2,7 @@ package com.bates.diningreview.controllers;
 
 import com.bates.diningreview.models.AdminReview;
 import com.bates.diningreview.models.DiningReview;
+import com.bates.diningreview.models.Restaurant;
 import com.bates.diningreview.models.Status;
 import com.bates.diningreview.repositories.DiningReviewRepository;
 import com.bates.diningreview.repositories.RestaurantRepository;
@@ -37,8 +38,35 @@ public class AdminController {
 
         DiningReview reviewToUpdate = reviewOpt.get();
 
+        // Update restaurant scores
+        Optional<Restaurant> restaurantOpt = restaurantRepository.findById(reviewToUpdate.getRestaurantId());
+        Restaurant restaurant = restaurantOpt.get();
+
         if (adminReview.getAccepted()) {
             reviewToUpdate.setStatus(Status.ACCEPTED);
+
+            if (reviewToUpdate.getDairyScore() != null) {
+                Integer score = (reviewToUpdate.getDairyScore() + restaurant.getDairyScore()) / 2;
+                reviewToUpdate.setDairyScore(score);
+            }
+
+            if (reviewToUpdate.getEggScore() != null) {
+                Integer score = (reviewToUpdate.getEggScore() + restaurant.getEggScore()) / 2;
+                reviewToUpdate.setEggScore(score);
+            }
+
+            if (reviewToUpdate.getPeanutScore() != null) {
+                Integer score = (reviewToUpdate.getPeanutScore() + restaurant.getPeanutScore()) / 2;
+                reviewToUpdate.setPeanutScore(score);
+            }
+
+            Integer overAllScore = (restaurant.getOverallScore() +
+                                    restaurant.getEggScore() +
+                                    restaurant.getDairyScore() +
+                                    restaurant.getPeanutScore()) / 4;
+
+            restaurant.setOverallScore(overAllScore);
+
         } else {
             reviewToUpdate.setStatus(Status.REJECTED);
         }
